@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world
+     
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+        - name: app
+          #image: brightbox/rails-hello-world
+          image: 995121555896.dkr.ecr.us-west-2.amazonaws.com/hack12_pushapp:latest
+          ports:
+            - name: web0
+              #containerPort: 3000
+              containerPort: 80
+              protocol: TCP
