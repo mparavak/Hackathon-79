@@ -125,7 +125,8 @@ for key,input_yaml in templates.items() :
         port = toml_obj.firewalls[0]["rules"][0]["ports"][0]
         yaml_obj.spec["ports"][0]["port"] = port
 
-        # yaml_obj.spec["rules"][0]["http"]["paths"][0]["path"] = '${BACKEND_CHECK_URL}'
+        environ = get_environment(toml_obj.pools)
+        yaml_obj.spec["rules"][0]["http"]["paths"][0]["path"] = environ.get('BACKEND_CHECK_URL','')
 
     elif yaml_obj.kind == "Secret":
 
