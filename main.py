@@ -1,4 +1,4 @@
-import os
+import time
 import sys
 
 import toml
@@ -100,20 +100,25 @@ def generate_env_file(environ):
 dct_toml = toml.load(input_toml)
 toml_obj = Toml(**dct_toml)
 
+ports_name = "web"+str(int(time.time()))
+
 for key,input_yaml in templates.items() :
     dct_yaml = get_template_object(input_yaml)
     yaml_obj = Yaml(**dct_yaml)
 
     if yaml_obj.kind == "Service":
         name = get_app_name(toml_obj.pools,"http-lb")
-        yaml_obj.spec["selector"]["app"] = name
-        yaml_obj.metadata["name"] = name
+        yaml_obj.spec["selector"]["app"] = name.split(".")[0]
+        yaml_obj.metadata["name"] = name.split(".")[0]
+        yaml_obj.spec["ports"][0]["targetPort"] = ports_name
 
     elif yaml_obj.kind == "Deployment":
         name = get_app_name(toml_obj.pools, "http-lb",found=False)
         yaml_obj.metadata["name"] = name
         yaml_obj.spec["selector"]["matchLabels"]["app"] = name
-        yaml_obj.spec["template"]["spec"]["containers"][0]["image"] = get_image_name(toml_obj.pools, "http-lb",found=False)
+        #yaml_obj.spec["template"]["spec"]["containers"][0]["image"] = get_image_name(toml_obj.pools, "http-lb",found=False)
+        yaml_obj.spec["template"]["spec"]["containers"][0]["ports"][0]["name"] = ports_name
+        yaml_obj.spec["template"]["metadata"]["labels"]["app"] = name
 
     elif yaml_obj.kind == "Ingress":
         name = toml_obj.firewalls[0]["name"]
