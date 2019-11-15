@@ -14,5 +14,5 @@ You will need Python 2.7 running on virtualenv .
 Where input_quadra.toml file is the quadra config file.  
 YAML files will be generated in the same directory with name in the format 
 
-`generated_generated_template_<kind>.yaml`  
+`generated_template_<kind>.yaml`  
 
